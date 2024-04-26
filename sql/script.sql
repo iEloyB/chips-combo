@@ -31,13 +31,22 @@ CREATE TABLE Queue (
     FOREIGN KEY (qu_playerId) REFERENCES Player(pl_id)
 );
 
-CREATE TABLE Game (
+CREATE TABLE Game_1v1PvP (
     ga_id INT AUTO_INCREMENT PRIMARY KEY,
     ga_status VARCHAR(50) NOT NULL,
     ga_gameCreationTimestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     ga_gameEndTimestamp TIMESTAMP,
     ga_queueId INT,
-    FOREIGN KEY (ga_queueId) REFERENCES Queue(qu_id)
+    player1Id INT NOT NULL,
+    player2Id INT NOT NULL,
+    player1obstacles TEXT,
+    player2obstacles TEXT,
+    winnerId INT,
+    round INT,
+    FOREIGN KEY (ga_queueId) REFERENCES Queue(qu_id),
+    FOREIGN KEY (player1Id) REFERENCES Player(pl_id),
+    FOREIGN KEY (player2Id) REFERENCES Player(pl_id),
+    FOREIGN KEY (winnerId) REFERENCES Player(pl_id)
 );
 
 CREATE TABLE Obstacle (

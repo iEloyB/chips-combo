@@ -33,9 +33,9 @@ class Queue
         return $queues;
     }
 
-    public function readById($queueId)
+    public function readById($playerId)
     {
-        $sql = "SELECT * FROM Queue WHERE qu_id=$queueId";
+        $sql = "SELECT * FROM Queue WHERE qu_playerId=$playerId";
         $result = $this->conn->query($sql);
         if ($result->num_rows > 0) {
             return $result->fetch_assoc();
@@ -54,9 +54,9 @@ class Queue
         }
     }
 
-    public function delete($queueId)
+    public function delete($playerId)
     {
-        $sql = "DELETE FROM Queue WHERE qu_id=$queueId";
+        $sql = "DELETE FROM Queue WHERE qu_playerId=$playerId";
         if ($this->conn->query($sql) === TRUE) {
             return "Queue deleted successfully.";
         } else {

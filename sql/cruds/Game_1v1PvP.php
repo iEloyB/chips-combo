@@ -1,7 +1,7 @@
 <?php
 require_once "../db_connect.php";
 
-class Game
+class Game_1v1PvP
 {
     private $conn;
 
@@ -10,9 +10,9 @@ class Game
         $this->conn = $connection;
     }
 
-    public function create($status, $queueId)
+    public function create($status, $queueId, $player1Id, $player2Id, $player1obstacles, $player2obstacles, $winnerId, $round)
     {
-        $sql = "INSERT INTO Game (ga_status, ga_queueId) VALUES ('$status', $queueId)";
+        $sql = "INSERT INTO Game_1v1PvP (ga_status, ga_queueId, player1Id, player2Id, player1obstacles, player2obstacles, winnerId, round) VALUES ('$status', $queueId, $player1Id, $player2Id, '$player1obstacles', '$player2obstacles', $winnerId, $round)";
         if ($this->conn->query($sql) === TRUE) {
             return "New game created successfully.";
         } else {
@@ -23,7 +23,7 @@ class Game
     public function read()
     {
         $games = array();
-        $sql = "SELECT * FROM Game";
+        $sql = "SELECT * FROM Game_1v1PvP";
         $result = $this->conn->query($sql);
         if ($result->num_rows > 0) {
             while ($row = $result->fetch_assoc()) {
@@ -35,7 +35,7 @@ class Game
 
     public function readById($gameId)
     {
-        $sql = "SELECT * FROM Game WHERE ga_id=$gameId";
+        $sql = "SELECT * FROM Game_1v1PvP WHERE ga_id=$gameId";
         $result = $this->conn->query($sql);
         if ($result->num_rows > 0) {
             return $result->fetch_assoc();
@@ -44,9 +44,9 @@ class Game
         }
     }
 
-    public function update($gameId, $status, $queueId)
+    public function update($gameId, $status, $queueId, $player1Id, $player2Id, $player1obstacles, $player2obstacles, $winnerId, $round)
     {
-        $sql = "UPDATE Game SET ga_status='$status', ga_queueId=$queueId WHERE ga_id=$gameId";
+        $sql = "UPDATE Game_1v1PvP SET ga_status='$status', ga_queueId=$queueId, player1Id=$player1Id, player2Id=$player2Id, player1obstacles='$player1obstacles', player2obstacles='$player2obstacles', winnerId=$winnerId, round=$round WHERE ga_id=$gameId";
         if ($this->conn->query($sql) === TRUE) {
             return "Game updated successfully.";
         } else {
@@ -56,7 +56,7 @@ class Game
 
     public function delete($gameId)
     {
-        $sql = "DELETE FROM Game WHERE ga_id=$gameId";
+        $sql = "DELETE FROM Game_1v1PvP WHERE ga_id=$gameId";
         if ($this->conn->query($sql) === TRUE) {
             return "Game deleted successfully.";
         } else {
@@ -65,40 +65,52 @@ class Game
     }
 }
 
-$game = new Game($conn);
+$game_1v1pvp = new Game_1v1PvP($conn);
 
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['operation'])) {
     $operation = $_POST['operation'];
 
     switch ($operation) {
         case 'create':
-            if (isset($_POST['status'], $_POST['queueId'])) {
+            if (isset($_POST['status'], $_POST['queueId'], $_POST['player1Id'], $_POST['player2Id'], $_POST['player1obstacles'], $_POST['player2obstacles'], $_POST['winnerId'], $_POST['round'])) {
                 $status = $_POST['status'];
                 $queueId = $_POST['queueId'];
-                echo $game->create($status, $queueId);
+                $player1Id = $_POST['player1Id'];
+                $player2Id = $_POST['player2Id'];
+                $player1obstacles = $_POST['player1obstacles'];
+                $player2obstacles = $_POST['player2obstacles'];
+                $winnerId = $_POST['winnerId'];
+                $round = $_POST['round'];
+                echo $game_1v1pvp->create($status, $queueId, $player1Id, $player2Id, $player1obstacles, $player2obstacles, $winnerId, $round);
             } else {
                 echo "Missing parameters for create operation.";
             }
             break;
         case 'read':
-            $games = $game->read();
+            $games = $game_1v1pvp->read();
             echo json_encode($games);
             break;
         case 'readById':
             if (isset($_POST['id'])) {
                 $gameId = $_POST['id'];
-                $gameData = $game->readById($gameId);
+                $gameData = $game_1v1pvp->readById($gameId);
                 echo json_encode($gameData);
             } else {
                 echo "ID is required for readById operation.";
             }
             break;
         case 'update':
-            if (isset($_POST['id'], $_POST['status'], $_POST['queueId'])) {
+            if (isset($_POST['id'], $_POST['status'], $_POST['queueId'], $_POST['player1Id'], $_POST['player2Id'], $_POST['player1obstacles'], $_POST['player2obstacles'], $_POST['winnerId'], $_POST['round'])) {
                 $gameId = $_POST['id'];
                 $status = $_POST['status'];
                 $queueId = $_POST['queueId'];
-                echo $game->update($gameId, $status, $queueId);
+                $player1Id = $_POST['player1Id'];
+                $player2Id = $_POST['player2Id'];
+                $player1obstacles = $_POST['player1obstacles'];
+                $player2obstacles = $_POST['player2obstacles'];
+                $winnerId = $_POST['winnerId'];
+                $round = $_POST['round'];
+                echo $game_1v1pvp->update($gameId, $status, $queueId, $player1Id, $player2Id, $player1obstacles, $player2obstacles, $winnerId, $round);
             } else {
                 echo "Missing parameters for update operation.";
             }
@@ -106,7 +118,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['operation'])) {
         case 'delete':
             if (isset($_POST['id'])) {
                 $gameId = $_POST['id'];
-                echo $game->delete($gameId);
+                echo $game_1v1pvp->delete($gameId);
             } else {
                 echo "ID is required for delete operation.";
             }
@@ -120,13 +132,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['operation'])) {
 
         switch ($operation) {
             case 'read':
-                $games = $game->read();
+                $games = $game_1v1pvp->read();
                 echo json_encode($games);
                 break;
             case 'readById':
                 if (isset($_GET['id'])) {
                     $gameId = $_GET['id'];
-                    $gameData = $game->readById($gameId);
+                    $gameData = $game_1v1pvp->readById($gameId);
                     echo json_encode($gameData);
                 } else {
                     echo "ID is required for readById operation.";
@@ -139,4 +151,5 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['operation'])) {
         echo "Operation is required.";
     }
 }
+
 ?>

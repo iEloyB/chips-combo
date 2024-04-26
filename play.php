@@ -17,8 +17,9 @@
     <main>
         <select name="modes" id="modes">
             <option value="solo">Solo</option>
-            <option value="solo">1v1 PvP</option>
+            <option value="1v1">1v1 PvP</option>
         </select>
+
         <button class="play">Play</button>
         <p class="queueStatus"></p>
     </main>
