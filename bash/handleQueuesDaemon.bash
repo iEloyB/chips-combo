@@ -2,6 +2,7 @@
 
 while true
 do
-    php /opt/lampp/htdocs/chips-combo/sql/game/handleQueues.php
+    /opt/lampp/bin/php /opt/lampp/htdocs/chips-combo/sql/game/handleQueues.php
+
     sleep 2
 done

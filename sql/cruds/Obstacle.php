@@ -10,9 +10,10 @@ class Obstacle
         $this->conn = $connection;
     }
 
-    public function create($gameId, $x, $y, $colorsRemaining)
+    public function create($gameId, $x, $y, $playerSelector, $colorsRemaining)
     {
-        $sql = "INSERT INTO Obstacle (ob_gameId, ob_x, ob_y, ob_colorsRemaining) VALUES ($gameId, $x, $y, '$colorsRemaining')";
+        $sql = "INSERT INTO Obstacle (ob_gameId, ob_playerSelectorId, ob_x, ob_y, ob_colorsRemaining) VALUES ($gameId, $playerSelector, $x, $y, '$colorsRemaining')";
+        
         if ($this->conn->query($sql) === TRUE) {
             return "New obstacle created successfully.";
         } else {
@@ -37,11 +38,33 @@ class Obstacle
     {
         $sql = "SELECT * FROM Obstacle WHERE ob_id=$obstacleId";
         $result = $this->conn->query($sql);
+        
+        $obstacles = array(); // Array para almacenar los obstáculos encontrados
+        
         if ($result->num_rows > 0) {
-            return $result->fetch_assoc();
-        } else {
-            return "Obstacle not found.";
+            while ($row = $result->fetch_assoc()) {
+                $obstacles[] = $row;
+            }
         }
+        
+        return $obstacles; // Devolver el array de obstáculos (puede ser vacío si no se encuentran obstáculos)
+    }
+    
+    public function readByGameId($obstacleId)
+    {
+        $sql = "SELECT * FROM Obstacle WHERE ob_gameId=$obstacleId";
+        $result = $this->conn->query($sql);
+        
+        $obstacles = array(); // Array para almacenar los obstáculos encontrados
+        
+        if ($result->num_rows > 0) {
+            // Si se encuentran obstáculos, iterar sobre cada fila y agregar al array $obstacles
+            while ($row = $result->fetch_assoc()) {
+                $obstacles[] = $row;
+            }
+        }
+        
+        return $obstacles; // Devolver el array de obstáculos (puede ser vacío si no se encuentran obstáculos)
     }
 
     public function update($obstacleId, $gameId, $x, $y, $colorsRemaining)
@@ -72,12 +95,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['operation'])) {
 
     switch ($operation) {
         case 'create':
-            if (isset($_POST['gameId'], $_POST['x'], $_POST['y'], $_POST['colorsRemaining'])) {
+            if (isset($_POST['gameId'], $_POST['x'], $_POST['y'], $_POST['playerSelectorId'], $_POST['colorsRemaining'])) {
                 $gameId = $_POST['gameId'];
                 $x = $_POST['x'];
                 $y = $_POST['y'];
+                $playerSelectorId = $_POST['playerSelectorId'];
                 $colorsRemaining = $_POST['colorsRemaining'];
-                echo $obstacle->create($gameId, $x, $y, $colorsRemaining);
+
+                echo json_encode($obstacle->create($gameId, $x, $y, $playerSelectorId, $colorsRemaining));
             } else {
                 echo "Missing parameters for create operation.";
             }
@@ -95,6 +120,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['operation'])) {
                 echo "ID is required for readById operation.";
             }
             break;
+        case 'readByGameId':
+            if (isset($_POST['id'])) {
+                $obstacleId = $_POST['id'];
+                $obstacleData = $obstacle->readByGameId($obstacleId);
+                echo json_encode($obstacleData);
+            } else {
+                echo "ID is required for readByGameId operation.";
+            }
+            break;
         case 'update':
             if (isset($_POST['id'], $_POST['gameId'], $_POST['x'], $_POST['y'], $_POST['colorsRemaining'])) {
                 $obstacleId = $_POST['id'];
@@ -102,7 +136,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['operation'])) {
                 $x = $_POST['x'];
                 $y = $_POST['y'];
                 $colorsRemaining = $_POST['colorsRemaining'];
-                echo $obstacle->update($obstacleId, $gameId, $x, $y, $colorsRemaining);
+                echo json_encode($obstacle->update($obstacleId, $gameId, $x, $y, $colorsRemaining));
             } else {
                 echo "Missing parameters for update operation.";
             }
@@ -110,7 +144,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['operation'])) {
         case 'delete':
             if (isset($_POST['id'])) {
                 $obstacleId = $_POST['id'];
-                echo $obstacle->delete($obstacleId);
+                echo json_encode($obstacle->delete($obstacleId));
             } else {
                 echo "ID is required for delete operation.";
             }
@@ -134,6 +168,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['operation'])) {
                     echo json_encode($obstacleData);
                 } else {
                     echo "ID is required for readById operation.";
+                }
+                break;
+            case 'readByGameId':
+                if (isset($_GET['id'])) {
+                    $obstacleId = $_GET['id'];
+                    $obstacleData = $obstacle->readByGameId($obstacleId);
+                    echo json_encode($obstacleData);
+                } else {
+                    echo "ID is required for readByGameId operation.";
                 }
                 break;
             default:

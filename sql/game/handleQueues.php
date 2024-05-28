@@ -1,14 +1,13 @@
 <?php
 set_time_limit(0);
 
-require_once "../sql/db_connect.php";
+require_once "/opt/lampp/htdocs/chips-combo/sql/db_connect.php";
 
 function processGames()
 {
     global $conn;
 
-    $sql = "SELECT qu_playerId, qu_id FROM Queue WHERE qu_status = 'waiting'";
-
+    $sql = "SELECT qu_playerId, qu_id FROM Queue WHERE qu_status = 'waiting' ORDER BY qu_id ASC LIMIT 2";
     $result = $conn->query($sql);
 
     if ($result->num_rows >= 2) {
@@ -18,33 +17,32 @@ function processGames()
             $players[] = $row;
         }
 
-        if (count($players) >= 2) {
-            $player1Id = $players[0]['qu_playerId'];
-            $player2Id = $players[1]['qu_playerId'];
-            $queueId1 = $players[0]['qu_id'];
-            $queueId2 = $players[1]['qu_id'];
+        $player1Id = $players[0]['qu_playerId'];
+        $player2Id = $players[1]['qu_playerId'];
+        $queueId1 = $players[0]['qu_id'];
+        $queueId2 = $players[1]['qu_id'];
 
-            createGameForPlayers($player1Id, $player2Id, $queueId1, $queueId2);
+        deleteQueue($queueId1);
+        deleteQueue($queueId2);
 
-            deleteQueue($queueId1);
-            deleteQueue($queueId2);
+        createGameForPlayers($player1Id, $player2Id);
 
-            echo "Se ha iniciado una partida para los jugadores con IDs $player1Id y $player2Id.<br>";
-        }
+        echo "Se ha iniciado una partida para los jugadores con IDs $player1Id y $player2Id.<br>";
+    } else {
+        echo "No hay suficientes jugadores esperando en la cola para iniciar una partida.<br>";
     }
 }
 
-function createGameForPlayers($player1Id, $player2Id, $queueId1, $queueId2)
+function createGameForPlayers($player1Id, $player2Id)
 {
     global $conn;
 
-    $sql = "INSERT INTO Game_1v1PvP (ga_status, ga_queueId, player1Id, player2Id) 
-            VALUES ('starting', NULL, $player1Id, $player2Id)";
-
-    if ($conn->query($sql) === TRUE) {
-        echo "Nueva partida creada exitosamente.";
-    } else {
-        echo "Error al crear una nueva partida: " . $conn->error;
+    $sql = "INSERT INTO Game_1v1PvP (ga_status, player1Id, player2Id, player1points, player2points) 
+            VALUES ('starting', $player1Id, $player2Id, 0, 0)";
+    
+    $result = $conn->query($sql);
+    if (!$result) {
+        die("Error al crear la partida: " . $conn->error);
     }
 }
 
@@ -53,8 +51,12 @@ function deleteQueue($queueId)
     global $conn;
 
     $sql = "DELETE FROM Queue WHERE qu_id = $queueId";
-    $conn->query($sql);
+    $result = $conn->query($sql);
+    if (!$result) {
+        die("Error al eliminar la entrada de la cola: " . $conn->error);
+    }
 }
 
 processGames();
+
 ?>

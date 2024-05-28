@@ -1,0 +1,238 @@
+@import url(../main.css);
+
+* {
+  font-family: "Minecraft", Fallback, sans-serif;
+}
+
+main {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  gap: 0.5em;
+}
+
+.board {
+  position: relative;
+  width: 25em;
+  height: 40em;
+  background-color: var(--accent);
+  border: black solid 0.2em;
+}
+
+.scoreboard {
+  width: 25em;
+  height: 3em;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  z-index: 60;
+}
+
+.scoreboard p {
+  padding: 0.5em;
+  background-color: gray;
+  color: white;
+  border: black solid 0.2em;
+}
+
+.scoreboard div {
+  position: relative;
+}
+
+div.winner {
+  position: absolute;
+  width: 3em;
+  height: 3em;
+  top: 50%;
+  left: 50%;
+
+  background-color: gold;
+  border-radius: 0.5em;
+  transform: translate(-50%, -5.5em);
+  background-image: url("https://cdn.dribbble.com/users/951851/screenshots/6064252/trophy.gif");
+  background-size: 100%;
+  background-position: 50% 50%;
+  background-repeat: no-repeat;
+}
+
+.scoreboard .player1::before {
+  content: "JUGADOR 1";
+  font-size: 0.8em;
+  position: absolute;
+  width: 100%;
+  height: 1em;
+  top: 0;
+  left: 0;
+
+  color: blue;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.scoreboard .player2::before {
+  content: "JUGADOR 2";
+  font-size: 0.8em;
+  position: absolute;
+  width: 100%;
+  height: 1em;
+  top: 0;
+  left: 0;
+
+  color: red;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.board::before {
+  content: "";
+  position: absolute;
+  width: 100vw;
+  height: 100%;
+  transform: translate(-50%, -100.5%);
+  background-color: var(--background);
+  left: 50%;
+  z-index: 50;
+}
+
+.board::after {
+  content: "";
+  position: absolute;
+  width: 100%;
+  height: 0em;
+  top: 90%;
+  left: 0;
+  border-top: black dotted 0.2em;
+  z-index: 50;
+}
+
+.colorsContainer {
+  width: 25em;
+
+  display: flex;
+  justify-content: space-between;
+  gap: 0.5em;
+}
+
+.colorsContainer div {
+  width: 3em;
+  height: 3em;
+  background-color: #1b1213;
+  border: black solid 0.2em;
+
+  transition: 0.15s ease;
+}
+
+.colorsContainer div:hover {
+  transform: scale(1.05);
+}
+
+.colorsContainer div:active {
+  transform: scale(1.01);
+}
+
+.obstacle {
+  position: absolute;
+  width: 2.5em;
+  height: 2.5em;
+  border-radius: 50%;
+
+  background-image: url("../../assets/game/enemy.gif");
+  background-size: 100%;
+  background-position: 50% 50%;
+  background-repeat: no-repeat;
+  transform: rotate(270deg);
+}
+
+.obstacleColors {
+  position: absolute;
+  width: 8.5em;
+  height: fit-content;
+
+  transform: rotate(90deg) translate(10%, 20%);
+
+  display: flex;
+  justify-content: center;
+
+  gap: 0.15em;
+}
+
+.obstacleColor {
+  width: 1em;
+  height: 1em;
+}
+
+.obstacle.player1 {
+  outline: blue solid 0.2em;
+}
+
+.obstacle.player2 {
+  outline: red solid 0.2em;
+}
+
+.roundContainer {
+  z-index: 999;
+}
+
+.roundContainer h1 {
+  font-size: 1.5em;
+  font-family: "Minecraft", Fallback, sans-serif;
+}
+
+.paused,
+.closing {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  background-color: rgba(255, 255, 0, 0.2);
+
+  z-index: 99999;
+}
+
+.closing {
+  background-color: white;
+}
+
+.paused h1,
+.closing h1 {
+  font-family: "Minecraft", Fallback, sans-serif;
+
+  color: goldenrod;
+  z-index: 999999;
+}
+
+@media only screen and (max-width: 600px) {
+  .board {
+    width: 15em;
+    height: 30em;
+  }
+
+  .colorsContainer {
+    width: 15em;
+  }
+
+  .colorsContainer div {
+    width: 2em;
+    height: 2em;
+  }
+
+  .scoreboard {
+    width: 15em;
+    height: 3em;
+  }
+}

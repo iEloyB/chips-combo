@@ -7,7 +7,6 @@ import {
 } from "../classes/Queue.js";
 import { readSessions, updateSession } from "../classes/Session.js";
 import { readPlayerById } from "../classes/Player.js";
-import { createGame } from "../classes/Game_1v1PvP.js";
 
 async function getSession() {
   const sessions = await readSessions();
@@ -62,7 +61,7 @@ playButton.addEventListener("click", () => {
   if (isInQueue) {
     startQueue();
     renderQueueStatus("Waiting for other players... (1/2)");
-    queueCheckInterval = setInterval(foundPlayers1v1PvP, 1000);
+    queueCheckInterval = setInterval(foundPlayers1v1PvP, 10);
   } else {
     stopQueue();
     renderQueueStatus("");
@@ -114,6 +113,13 @@ function stopQueue() {
 }
 
 function startGame() {
-  //updateQueue(playerQueue.qu_id, "ingame", "1v1pvp");
-  updateSession(player.pl_id, "ingame");
+  setTimeout(() => {
+    renderQueueStatus("Creating Lobby...");
+  }, 500);
+  setTimeout(() => {
+    renderQueueStatus("Joining game...");
+  }, 1000);
+  setTimeout(() => {
+    window.location.href = "./game.php";
+  }, 2500);
 }

@@ -1,3 +1,4 @@
+-- Creación de las tablas
 CREATE TABLE Color (
     co_id INT AUTO_INCREMENT PRIMARY KEY,
     co_hexadecimalColor VARCHAR(6) NOT NULL
@@ -39,8 +40,8 @@ CREATE TABLE Game_1v1PvP (
     ga_queueId INT,
     player1Id INT NOT NULL,
     player2Id INT NOT NULL,
-    player1obstacles TEXT,
-    player2obstacles TEXT,
+    player1points INT,
+    player2points INT,
     winnerId INT,
     round INT,
     FOREIGN KEY (ga_queueId) REFERENCES Queue(qu_id),
@@ -52,8 +53,25 @@ CREATE TABLE Game_1v1PvP (
 CREATE TABLE Obstacle (
     ob_id INT AUTO_INCREMENT PRIMARY KEY,
     ob_gameId INT,
+    ob_playerSelectorId INT,
     ob_x INT NOT NULL,
     ob_y INT NOT NULL,
     ob_colorsRemaining TEXT,
-    FOREIGN KEY (ob_gameId) REFERENCES Game(ga_id)
+    FOREIGN KEY (ob_gameId) REFERENCES Game_1v1PvP(ga_id),
+    FOREIGN KEY (ob_playerSelectorId) REFERENCES Player(pl_id)
 );
+
+
+ALTER TABLE Color AUTO_INCREMENT = 1;
+ALTER TABLE Player AUTO_INCREMENT = 1;
+ALTER TABLE Session AUTO_INCREMENT = 1;
+ALTER TABLE Queue AUTO_INCREMENT = 1;
+ALTER TABLE Game_1v1PvP AUTO_INCREMENT = 1;
+ALTER TABLE Obstacle AUTO_INCREMENT = 1;
+
+INSERT INTO Color (co_hexadecimalColor) VALUES ('FF5733');
+INSERT INTO Color (co_hexadecimalColor) VALUES ('33FF57');
+INSERT INTO Color (co_hexadecimalColor) VALUES ('3357FF');
+INSERT INTO Color (co_hexadecimalColor) VALUES ('FF33A1');
+INSERT INTO Color (co_hexadecimalColor) VALUES ('FFEB33');
+INSERT INTO Color (co_hexadecimalColor) VALUES ('33FFF3');
