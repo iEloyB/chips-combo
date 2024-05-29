@@ -68,7 +68,3 @@ async function loadGame() {
     console.error("Error al cargar los juegos:", error);
   }
 }
-
-window.addEventListener("beforeunload", function (event) {
-  this.alert("aaa");
-});

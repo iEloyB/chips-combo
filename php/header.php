@@ -18,6 +18,7 @@
         background-color: #8338c9;
         display: flex;
         justify-content: space-between;
+        z-index: 999999;
     }
 
     header ~ * {
@@ -147,7 +148,7 @@
             </a>
         </section>
         <section class="middleContainer">
-            <a href="./play.php">News</a>
+            <a href="./play.php">Leaderboard</a>
             <a href="./play.php">Play</a>
         </section>
         <section class="sessionContainer">

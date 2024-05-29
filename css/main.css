@@ -129,3 +129,28 @@ button:active {
   cursor: pointer;
   transform: scale(0.95);
 }
+
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+  border-left: 2px solid #ccc;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 1);
+  border-radius: 10px;
+  border: 2px solid #fff;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 1);
+}
+
+/* Para Firefox */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(0, 0, 0, 1) transparent;
+}

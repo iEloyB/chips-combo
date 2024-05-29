@@ -103,7 +103,7 @@ export class HandleGame {
         ? parseInt(game.player1points) + 100
         : game.player1points,
       parseInt(game.player2Id) == playerId
-        ? parseInt(game.player2points) - 100
+        ? parseInt(game.player2points) + 100
         : game.player2points,
       game.winnerId,
       game.round
@@ -189,8 +189,8 @@ export class HandleGame {
   }
 
   async winGame(winnerId) {
-    await this.setStatus("closing");
     await this.setWinner(winnerId);
+    await this.setStatus("closing");
 
     setTimeout(async () => {
       await this.setStatus("closed");
@@ -292,7 +292,11 @@ export class HandleGame {
 
   async end() {
     await this.setStatus("closing");
-    GAME_STATUS = "ending";
+    GAME_STATUS = "closing";
+
+    setTimeout(async () => {
+      await this.setStatus("closed");
+    }, 5000);
   }
 
   async handleObstacle(obstacle) {
